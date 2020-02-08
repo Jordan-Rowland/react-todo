@@ -37,6 +37,8 @@ body {
   border: .02px solid hsl(215, 82%, 70%);
   /* border-bottom: 2px solid #ccc; */
   /* box-shadow: 4px 4px 3px 0px #4a4d52; */
+  box-shadow: inset 4px 5px 2px 0px #4a4d52;
+
   background: hsl(216, 63%, 92%);
   font-size: 2rem;
   padding: 0.5rem;

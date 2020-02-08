@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import TodoItem from "./TodoItem.jsx";
 
 
 function TodoList() {
   const [todoInput, setTodoInput] = useState("")
   const [editedTodoInput, setEditedTodoInput] = useState("")
-  const [todos, setTodos] = useState([])
 
-  // if (localStorage.getItem('todos') !== null) {
-  //   setTodos(localStorage.getItem('todos').split(","));
-  //   console.log(localStorage.getItem('todos'));
-  // }
+  const todosLS = localStorage.getItem('todos')
+  const [todos, setTodos] = useState(typeof todosLS === 'string' ? todosLS.split("|") : [])
+  const textInputRef = useRef(null);
 
+  function localeSave(items) {
+    if (items) {
+      localStorage.setItem('todos', items.join("|"));
+    }
+  }
 
   function handleChange(e) {
     setTodoInput(e.target.value);
@@ -21,13 +24,21 @@ function TodoList() {
     const updatedTodoIndex = todos.findIndex(text => text === editedTodoInput)
     if (e.key === "Enter" && todoInput) {
       if (!editedTodoInput) {
-        setTodos(prevTodos => [...prevTodos, todoInput])
+        setTodos(prevTodos => {
+          localeSave([...prevTodos, todoInput])
+          return [...prevTodos, todoInput]
+        })
         setTodoInput("");
-        // localStorage.setItem('todos', [todoInput])
       } else {
         const updatedTodos = [...todos]
         updatedTodos[updatedTodoIndex] = todoInput
-        setTodos(prevState => updatedTodos)
+        setTodos(updatedTodos)
+        setTodos(prevTodos => {
+          if (updatedTodos) {
+            localeSave(updatedTodos)
+          }
+          return updatedTodos
+        })
         setTodoInput("")
         setEditedTodoInput("")
       }
@@ -35,13 +46,23 @@ function TodoList() {
   }
 
   function deleteTodo(todoText) {
-    setTodos(prevTodos => prevTodos.filter(todo => todo !== todoText))
-  }
+    let filtered;
+    setTodos(prevTodos => {
+      filtered = prevTodos.filter(todo => todo !== todoText)
+      localeSave(filtered)
+      return filtered;
+      })
+      if (!filtered.length) {
+        localStorage.clear();
+      }
+    }
 
   function editTodo(todoText) {
     setTodoInput(todoText)
     setEditedTodoInput(todoText)
+    textInputRef.current.focus()
   }
+
 
   const todoItems = todos.map(todo => {
     return (
@@ -62,6 +83,7 @@ function TodoList() {
         onChange={handleChange}
         onKeyDown={submitTodo}
         value={todoInput}
+        ref={textInputRef}
       />
       {todoItems}
     </div>
