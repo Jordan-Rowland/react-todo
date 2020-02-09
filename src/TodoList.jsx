@@ -11,7 +11,7 @@ function TodoList() {
   const textInputRef = useRef(null);
 
   function localeSave(items) {
-    if (items) {
+    if (items.length) {
       localStorage.setItem('todos', items.join("|"));
     }
   }
@@ -46,12 +46,13 @@ function TodoList() {
   }
 
   function deleteTodo(todoText) {
-    let filtered;
+    let filtered = [];
     setTodos(prevTodos => {
       filtered = prevTodos.filter(todo => todo !== todoText)
       localeSave(filtered)
       return filtered;
       })
+      console.log(filtered);
       if (!filtered.length) {
         localStorage.clear();
       }
