@@ -1,39 +1,74 @@
-/**
- * Welcome to your Workbox-powered service worker!
- *
- * You'll need to register this file in your web app and you should
- * disable HTTP caching for this file too.
- * See https://goo.gl/nhQhGp
- *
- * The rest of the code is auto-generated. Please don't update this file
- * directly; instead, make changes to your Workbox build configuration
- * and re-run your build process.
- * See https://goo.gl/2aRDsh
- */
+const CACHE_VERSION = 2;
+const CACHE_STATIC_NAME  = `static-v${CACHE_VERSION}`;
+const CACHE_DYNAMIC_NAME  = `dynamic-v${CACHE_VERSION}`;
+const STATIC_FILES = [
+  './',
+  "./static/css/main.14e1a238.chunk.css",
+  "./static/js/2.912dfd2d.chunk.js",
+  "./static/js/2.912dfd2d.chunk.js.LICENSE.txt",
+  "./static/js/main.6da5f1d5.chunk.js",
+  "./static/js/runtime-main.b2044548.js",
+  './index.html',
+  './manifest.json'
+];
 
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
-importScripts(
-  "./precache-manifest.bcf96799bfa5f6ab612818df846a8d45.js"
-);
+// Cleaning up cache
+function trimCache(cacheName, maxItems) {
+  caches.open(cacheName)
+    .then(cache => {
+      cache.keys()
+      .then(keys => {
+        if (keys.length > maxItems) {
+          cache.delete(keys[0])
+          .then(trimCache(cacheName, maxItems));
+        }
+    });
+  });
+}
 
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+
+// Cache app shell
+self.addEventListener('install', event => {
+  console.log('[Service Worker] Installing service worker', event);
+  event.waitUntil(
+    caches.open(CACHE_STATIC_NAME)
+    .then(cache => {
+      console.log(`[Service Worker] Pre-caching app shell -> ${CACHE_STATIC_NAME}`);
+      cache.addAll(STATIC_FILES);
+    })
+  );
 });
 
-workbox.core.clientsClaim();
 
-/**
- * The workboxSW.precacheAndRoute() method efficiently caches and responds to
- * requests for URLs in the manifest.
- * See https://goo.gl/S9QRab
- */
-self.__precacheManifest = [].concat(self.__precacheManifest || []);
-workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+self.addEventListener('activate', event => {
+  console.log('[Service Worker] Activating service worker', event);
+  // Clear old cached data for updates
+  event.waitUntil(
+    caches.keys()
+    .then(function(key_list) {
+      return Promise.all(key_list.map(function(key) {
+        if (key !== CACHE_STATIC_NAME && key !== CACHE_DYNAMIC_NAME) {
+          console.log(`[Service Worker] Removing old cache -> ${key}`);
+          return caches.delete(key);
+        }
+      }));
+    })
+  );
+  return self.clients.claim();
+});
 
-workbox.routing.registerNavigationRoute(workbox.precaching.getCacheKeyForURL("./index.html"), {
 
-  blacklist: [/^\/_/,/\/[^/?]+\.[^/]+$/],
+// Network with cache fallback strategy, caching new files whenever network works
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.open(CACHE_STATIC_NAME).then(function(cache) {
+      return fetch(event.request).then(function(networkResponse) {
+        cache.put(event.request, networkResponse.clone());
+        return networkResponse;
+      }).catch(function() {
+        return caches.match(event.request);
+      });
+    })
+  );
 });
