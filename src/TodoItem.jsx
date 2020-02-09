@@ -2,18 +2,18 @@ import React from "react";
 
 function TodoItem(props) {
 
-  function handleClickDelete() {
-    props.onDelete(props.title)
+  function dispatchDelete() {
+    props.onDelete(props.text)
   }
 
-  function handleClickEdit(e) {
-    props.onEdit(props.title, e)
+  function dispatchEdit() {
+    props.onEdit(props.text)
   }
 
   return(
     <div className="todo-item">
-      <h2 onClick={handleClickEdit}>{props.title}</h2>
-      <span className="delete-icon" onClick={handleClickDelete}>
+      <h2 onClick={dispatchEdit}>{props.text}</h2>
+      <span className="delete-icon" onClick={dispatchDelete}>
         √
       </span>
     </div>
