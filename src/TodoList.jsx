@@ -17,23 +17,19 @@ function TodoList() {
 
   function submitTodo(e) {
     const updatedTodoIndex = todos.findIndex(text => text === editedTodoInput)
-    if (e.key === "Enter" && todoInput) {
+    const todoInputTrimmed = todoInput.trim()
+    if (e.key === "Enter" && todoInputTrimmed) {
       if (!editedTodoInput) {
         setTodos(prevTodos => {
-          setTodoStorage([...prevTodos, todoInput])
-          return [...prevTodos, todoInput]
+          setTodoStorage([...prevTodos, todoInputTrimmed])
+          return [...prevTodos, todoInputTrimmed]
         })
         setTodoInput("");
       } else {
         const updatedTodos = [...todos]
-        updatedTodos[updatedTodoIndex] = todoInput
+        updatedTodos[updatedTodoIndex] = todoInputTrimmed
         setTodos(updatedTodos)
-        setTodos(prevTodos => {
-          if (updatedTodos) {
-            setTodoStorage(updatedTodos)
-          }
-          return updatedTodos
-        })
+        setTodoStorage(updatedTodos)
         setTodoInput("")
         setEditedTodoInput("")
       }
@@ -55,8 +51,9 @@ function TodoList() {
 
 
   function editTodo(todoText) {
-    setTodoInput(todoText)
-    setEditedTodoInput(todoText)
+    const todoTextTrimmed = todoText.trim()
+    setTodoInput(todoTextTrimmed)
+    setEditedTodoInput(todoTextTrimmed)
     textInputRef.current.focus()
   }
 
