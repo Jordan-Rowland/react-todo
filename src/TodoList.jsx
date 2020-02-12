@@ -58,17 +58,6 @@ function TodoList() {
   }
 
 
-  const todoItems = todos.map(todo => {
-    return (
-      <TodoItem
-        key={todo}
-        text={todo}
-        onDelete={deleteTodo}
-        onEdit={editTodo}
-      />
-    )
-  })
-
   return(
     <div className="todo-container">
       <input
@@ -79,7 +68,13 @@ function TodoList() {
         value={todoInput}
         ref={textInputRef}
       />
-      {todoItems}
+      {todos.map(todo =>
+        <TodoItem
+          key={todo}
+          text={todo}
+          onDelete={deleteTodo}
+          onEdit={editTodo} />
+      )}
     </div>
   );
 }

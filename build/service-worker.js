@@ -3,12 +3,12 @@ const CACHE_STATIC_NAME  = `static-v${CACHE_VERSION}`;
 const CACHE_DYNAMIC_NAME  = `dynamic-v${CACHE_VERSION}`;
 const STATIC_FILES = [
   './',
-  "./static/css/main.14e1a238.chunk.css",
-  "./static/js/2.912dfd2d.chunk.js",
-  "./static/js/2.912dfd2d.chunk.js.LICENSE.txt",
-  "./static/js/main.6da5f1d5.chunk.js",
+  "./index.html",
+  "./static/css/main.66e2b5f5.chunk.css",
+  "./static/js/2.b32fce1b.chunk.js",
+  "./static/js/2.b32fce1b.chunk.js.LICENSE.txt",
+  "./static/js/main.1b94c24b.chunk.js",
   "./static/js/runtime-main.b2044548.js",
-  './index.html',
   './manifest.json'
 ];
 

@@ -10,12 +10,6 @@ body {
   background: hsl(216, 62%, 62%);
 }
 
-/* .header {
-  background-image: url("./header.png");
-  background-image: url("./header2.jpg");
-  background-position: center;
-  height: 18rem;
-} */
 
 .todo-container {
   /* width: 70%; */
@@ -37,8 +31,7 @@ body {
   border: .02px solid hsl(215, 82%, 70%);
   /* border-bottom: 2px solid #ccc; */
   /* box-shadow: 4px 4px 3px 0px #4a4d52; */
-  box-shadow: inset 4px 5px 2px 0px #4a4d52;
-
+  box-shadow: inset 2px 2.5px 2px 0px #4a4d52;
   background: hsl(216, 63%, 92%);
   font-size: 2rem;
   padding: 0.5rem;
@@ -69,6 +62,22 @@ body {
 
 .delete-icon:hover {
   cursor: pointer;
+}
+
+.todo-item {
+  animation: .3s slidein;
+}
+
+@keyframes slidein {
+  from {
+    margin-left: -100%;
+    width: 100%;
+  }
+
+  to {
+    margin-left: 0%;
+    width: 100%;
+  }
 }
 
 @media (min-width: 40rem) {
